@@ -55,6 +55,26 @@ def stations():
         station_list.append(station_dict)
     return jsonify(station_list)
 
+@app.route("/tobs")
+def tobs():
+    session = Session(engine)
+    results = session.query(Measurement.date, Measurement.tobs).\
+    filter(Measurement.station == "USC00519281").\
+    filter(Measurement.date <= dt.date(2017, 8, 23)).\
+    filter(Measurement.date >= one_year).all()
+
+    session.close()
+    
+    temp_list = []
+    for temp in results:
+        temp_dict = {}
+        temp_dict["tobs"] = temperature
+        temp_list.append(temp_dict)
+    return jsonify(temp_list)
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
