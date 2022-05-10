@@ -55,9 +55,6 @@ def stations():
         station_list.append(station_dict)
     return jsonify(station_list)
 
-/api/v1.0/stations
-
-Return a JSON list of stations from the dataset.
 
 if __name__ == '__main__':
     app.run(debug=True)
