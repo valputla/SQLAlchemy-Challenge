@@ -6,56 +6,36 @@ Climate Analysis and Exploration using SQLAlchemy of precipitation and temperatu
 ## Methods Used
 Barplot, Statistic Summaries, T-test
 
-
 ## Technologies
 Python, Matplotlib, SQLAlchemy, SQLite, Flask
 
+## Featured Notebooks
+  <!-- Unordered List (bullet pointed) -->
+  <ul>
+    <li>climate.ipynb</li>
+    <li>temp_analysis_1.ipynb</li>
+    <li>Stemp_analysis_2.ipynb</li>
+    <li>app.py</li>
+  </ul>
+
+Climate notebook - Using SQLAlchemy ORM, queries are made from a SQLite file with Hawaii climate data.
+Temperature analysis 1 & 2 - Further exploration and visualization of climate analysis with specific timeframes. 
+App.py - Climate data API created using Flask.
 
 ## Data Source
 Data found in resources/hawaii-measurements.csv and resources/hawaii-stations.csv.
 
-
 ## Installation
-Code was tested using Python 3.8.  The environment also needs pandas and matplotlib. The environment was setup as follows:
+Code was tested using Python 3.8.  The environment also needs pandas and matplotlib. 
 
-conda create -n envpy38 python=3.8 anaconda
-source activate envpy38
-jupyter notebook
-
-
-If environment does not include pandas or matplotlib then install the following from terminal:
-
-conda install pandas
-conda install matplotlib
-
-
-
-
-Additional Analysis  (or Demo-Preview)
-Good location to add in a couple images and write some conclusions.
-
-
-
-## Featured Notebooks
-
-
-
-Document Title
-Purpose
-
-
-
-
-data_preparation.py
-Data retrieval and cleaning
-
-
-data_analysis.py
-Analysis - plotting and statistical tests
-
-
-report.md
-Findings, suggestions, and future work.
-
+The environment was setup as follows:
+  <!-- Unordered List (bullet pointed) -->
+  <ul>
+    <li>conda install pandas</li>
+    <li>conda install matplotlib</li>
+    <li>conda create -n envpy38 python=3.8 anaconda</li>
+    <li>source activate envpy38</li>
+    <li>jupyter notebook</li>
+  <br>
 
 
