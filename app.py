@@ -17,16 +17,16 @@ Station = Base.classes.station
 app = Flask(__name__)
 
 
-# @app.route("/")
-# def home():
-#     f"Welcome to the Climate app API!<br>"
-#     f"Available routes:<br/>"
-#     f"/api/v1.0/precipitation<br/>"
-#     f"/api/v1.0/stations<br/>"
-#     f"/api/v1.0/tobs<br/>"
-#     f"/api/v1.0/<start>/<br/>"
-#     f"/api/v1.0/<start>/<end>"
-    
+@app.route("/")
+def home():
+    f"Welcome to the Climate app API!<br>"
+    f"Available routes:<br/>"
+    f"/api/v1.0/precipitation<br/>"
+    f"/api/v1.0/stations<br/>"
+    f"/api/v1.0/tobs<br/>"
+    f"/api/v1.0/<start>/<br/>"
+    f"/api/v1.0/<start>/<end>"
+ 
 @app.route("/api/v1.0/precipitation")
 def precipitation():
     session = Session(engine)
@@ -48,13 +48,14 @@ def stations():
     results = session.query(Station.station).all()
     
     session.close()
-    
+
     station_list = []
     for station in results:
         station_dict = {}
         station_dict["station"] = station
         station_list.append(station_dict)
     return jsonify(station_list)
+
 
 @app.route("/api/v1.0/tobs")
 def tobs():
@@ -73,28 +74,73 @@ def tobs():
         temp_dict["tobs"] = temperature
         temp_list.append(temp_dict)
     return jsonify(temp_list)
+    
+# def daily_normals(date):
+#     """Daily Normals.
+    
+#     Args:
+#         date (str): A date string in the format '%m-%d'
+        
+#     Returns:
+#         A list of tuples containing the daily normals, tmin, tavg, and tmax
+    
+#     """
+    
+#     sel = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
+#     return session.query(*sel).filter(func.strftime("%m-%d", Measurement.date) == date).all()
 
-    session.close()
+# # For example
+# daily_normals("01-01")    
     
     
 @app.route("/api/v1.0/<start>")
 def summary_stats_startdate(start):
-    normalized_startdate = start.replace(" ", "").lower()
-    for date in temp_list:
-        search_term = date["start"].replace(" ", "").lower()
+    session = Session(engine)
+    sel = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
+    results = session.query(*sel).filter(func.strftime("%m-%d", Measurement.date) == date).all()
 
-        if search_term == normalized_startdate:
-            
-            return jsonify(date)
+    session.close()
+    
+    stats_startdate_list = []
+    for stat in stats:
+        stat_dict = {}
+        stat_dict[0] = tmin
+        stat_dict[1] = tavg
+        stat_dict[2] = tmax
+        stats_startdate_list.append(stat_dict)
+    return jsonify(stats_startdate_list)
 
-    return jsonify({"error": "Character not found."}), 404
+
+
+# /api/v1.0/<start> and /api/v1.0/<start>/<end>
+
+
+# Return a JSON list of the minimum temperature, the average temperature, and the maximum temperature for a given start or start-end range.
+
+
+
+# When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates from the start date through the end date (inclusive).
+
+# def calc_temps(start_date, end_date):
+#     """TMIN, TAVG, and TMAX for a list of dates.
+    
+#     Args:
+#         start_date (string): A date string in the format %Y-%m-%d
+#         end_date (string): A date string in the format %Y-%m-%d
+        
+#     Returns:
+#         TMIN, TAVE, and TMAX
+#     """
+    
+#     return session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+#         filter(Measurement.date >= start_date).filter(Measurement.date <= end_date).all()
+
+# # For example
+# print(calc_temps('2012-02-28', '2012-03-05'))
 
 
 
 
-
-
-# When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than or equal to the start date.
 
 # Return a JSON list of the minimum temperature, the average temperature, and the maximum temperature for a given start or start-end range.
 
