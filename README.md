@@ -10,7 +10,7 @@ Climate Analysis and Exploration of precipitation and temperature data in Hawaii
 * [Features](#features)
 * [Screenshots](#screenshots)
 * [Setup](#setup)
-* [Usage](#usage)
+* [Data Source](#data-source)
 
 
 ## General Information
@@ -53,6 +53,7 @@ The environment was setup as follows:
     <li>source activate envpy38</li>
     <li>jupyter notebook</li>
   <br>
+<br></br>
 
 ## Data Source
 Data found in resources/hawaii-measurements.csv and resources/hawaii-stations.csv.
