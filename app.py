@@ -79,49 +79,25 @@ def tobs():
         temp_list.append(temp_dict)
     return jsonify(temp_list)
     
-# def daily_normals(date):
-#     """Daily Normals.
-    
-#     Args:
-#         date (str): A date string in the format '%m-%d'
-        
-#     Returns:
-#         A list of tuples containing the daily normals, tmin, tavg, and tmax
-    
-#     """
-    
-#     sel = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
-#     return session.query(*sel).filter(func.strftime("%m-%d", Measurement.date) == date).all()
-
-# # For example
-# daily_normals("01-01")    
-    
     
 @app.route("/api/v1.0/<start>")
 @app.route("/api/v1.0/<start>/<end>")
-def temp(start, end):
+def temp(start = None, end = None):
     session = Session(engine)
-    sel = [Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
-    results = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-        filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+    sel = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
+    results = session.query(*sel).filter(func.strftime(Measurement.date) >= start).filter(func.strftime(Measurement.date) <= end).all()
     
-    #results = session.query(*sel).filter(func.strftime(Measurement.date) >= start) & (func.strftime(Measurement.date) <= end).order_by(Measurement.date).all()
+    session.close()    
     
-    session.close()
-    
-    
-    temp_tobs = {}
-    for date, tmin, tavg, tmax in results:
-        
-        tmin = results.tobs.min()
-        tavg = results.tobs.avg()
-        tmax = results.tobs.max()
-        
-        temp_tobs[0] = date
-        temp_tobs[1] = tmin
-        temp_tobs[2] = tavg
-        temp_tobs[3] = tmax
-        temp_tobs.append(temp_tobs)
+    temp_tobs = []
+    for tmin, tavg, tmax in results:
+        temp_tobs_dict = {}
+
+        temp_tobs_dict[0] = tmin
+        temp_tobs_dict[1] = tavg
+        temp_tobs_dict[2] = tmax
+
+        temp_tobs.append(temp_tobs_dict)
     return jsonify(temp_tobs)
 
 
