@@ -33,9 +33,11 @@ Notebooks:
 
 ## Screenshots
 ![waiheetempgraph](https://user-images.githubusercontent.com/93561950/168341807-724fc785-1d30-416d-af17-1e3befbc2cd9.png)
+
 The Waihee Station is the most active station in the dataset, temperatures visualized above. 
   
 ![precipitationgraph](https://user-images.githubusercontent.com/93561950/168342028-9de65067-fcc9-44ec-8568-5a498e9a1f36.png)
+
 Precipitation charted over a one year period from August 2016 to August 2017. August-September reveals the highest precipitation. 
 
 ## Setup
