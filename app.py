@@ -19,13 +19,16 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    f"Welcome to the Climate app API!<br>"
-    f"Available routes:<br/>"
-    f"/api/v1.0/precipitation<br/>"
-    f"/api/v1.0/stations<br/>"
-    f"/api/v1.0/tobs<br/>"
-    f"/api/v1.0/<start>/<br/>"
-    f"/api/v1.0/<start>/<end>"
+    return (
+        f"Available Routes:<br/>"
+        f"/api/v1.0/<br/>"
+        f"/api/v1.0/precipitation<br/>"
+        f"/api/v1.0/stations<br/>"
+        f"/api/v1.0/tobs<br/>"
+        f"/api/v1.0/start<br/>"
+        f"/api/v1.0/start%20end"
+    )
+
  
 @app.route("/api/v1.0/precipitation")
 def precipitation():
@@ -45,14 +48,15 @@ def precipitation():
 @app.route("/api/v1.0/stations")
 def stations():
     session = Session(engine)
-    results = session.query(Station.station).all()
+    results = session.query(Station.station, Station.name).all()
     
     session.close()
 
     station_list = []
     for station in results:
         station_dict = {}
-        station_dict["station"] = station
+        station_dict["station id"] = station[0]
+        station_dict["station name"] = station[1]
         station_list.append(station_dict)
     return jsonify(station_list)
 
@@ -70,8 +74,8 @@ def tobs():
     temp_list = []
     for temp in results:
         temp_dict = {}
-        temp_dict["date"] = date
-        temp_dict["tobs"] = temperature
+        temp_dict["date"] = temp[0]
+        temp_dict["tobs"] = temp[1]
         temp_list.append(temp_dict)
     return jsonify(temp_list)
     
@@ -94,23 +98,26 @@ def tobs():
     
     
 @app.route("/api/v1.0/<start>")
-def summary_stats_startdate(start):
+@app.route("/api/v1.0/<start>/<end>")
+def temp(start = None, end = None):
     session = Session(engine)
-    sel = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
-    results = session.query(*sel).filter(func.strftime("%m-%d", Measurement.date) == date).all()
+    sel = [Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
+    results = session.query(*sel).filter(func.strftime(Measurement.date) >= start) & (func.strftime(Measurement.date) <= end).order_by(Measurement.date).all()
 
     session.close()
     
-    stats_startdate_list = []
-    for stat in stats:
+    temp_tobs = {}
+    for date, tmin, tavg, tmax in results:
         stat_dict = {}
-        stat_dict[0] = tmin
-        stat_dict[1] = tavg
-        stat_dict[2] = tmax
-        stats_startdate_list.append(stat_dict)
-    return jsonify(stats_startdate_list)
+        stat_dict[0] = date
+        stat_dict[1] = tmin
+        stat_dict[2] = tavg
+        stat_dict[3] = tmax
+        temp_tobs.append(stat_dict)
+    return jsonify(temp_tobs)
 
 
+## If statement - if the user does not provide anything then we need to provide a date. If end is = None then... else... continue with for loop.
 
 # /api/v1.0/<start> and /api/v1.0/<start>/<end>
 
@@ -138,23 +145,10 @@ def summary_stats_startdate(start):
 # # For example
 # print(calc_temps('2012-02-28', '2012-03-05'))
 
-
-
-
-
 # Return a JSON list of the minimum temperature, the average temperature, and the maximum temperature for a given start or start-end range.
-
-
-
-
-
 
 # /api/v1.0/<start>/<end>
 # When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates from the start date through the end date (inclusive).
-
-
-
-
 
 
 
