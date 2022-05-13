@@ -26,7 +26,7 @@ def home():
         f"/api/v1.0/stations<br/>"
         f"/api/v1.0/tobs<br/>"
         f"/api/v1.0/start<br/>"
-        f"/api/v1.0/start%20end"
+        f"/api/v1.0/start/end"
     )
 
  
@@ -99,21 +99,29 @@ def tobs():
     
 @app.route("/api/v1.0/<start>")
 @app.route("/api/v1.0/<start>/<end>")
-def temp(start = None, end = None):
+def temp(start, end):
     session = Session(engine)
     sel = [Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
-    results = session.query(*sel).filter(func.strftime(Measurement.date) >= start) & (func.strftime(Measurement.date) <= end).order_by(Measurement.date).all()
-
+    results = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+        filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+    
+    #results = session.query(*sel).filter(func.strftime(Measurement.date) >= start) & (func.strftime(Measurement.date) <= end).order_by(Measurement.date).all()
+    
     session.close()
+    
     
     temp_tobs = {}
     for date, tmin, tavg, tmax in results:
-        stat_dict = {}
-        stat_dict[0] = date
-        stat_dict[1] = tmin
-        stat_dict[2] = tavg
-        stat_dict[3] = tmax
-        temp_tobs.append(stat_dict)
+        
+        tmin = results.tobs.min()
+        tavg = results.tobs.avg()
+        tmax = results.tobs.max()
+        
+        temp_tobs[0] = date
+        temp_tobs[1] = tmin
+        temp_tobs[2] = tavg
+        temp_tobs[3] = tmax
+        temp_tobs.append(temp_tobs)
     return jsonify(temp_tobs)
 
 
